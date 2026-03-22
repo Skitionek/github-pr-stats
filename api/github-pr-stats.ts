@@ -98,7 +98,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 }
 
-function parseQueryParams(query: VercelRequest['query']): APIParams {
+export function parseQueryParams(query: VercelRequest['query']): APIParams {
   const getString = (key: string): string | undefined => {
     const value = query[key]
     return Array.isArray(value) ? value[0] : value

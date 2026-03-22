@@ -1,0 +1,50 @@
+name: Build Action Code
+
+on:
+  push:
+    paths:
+      - 'index.ts'
+      - 'scripts/**'
+      - 'api/**'
+      - 'action.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/build-action-code.yml'
+  pull_request:
+    paths:
+      - 'index.ts'
+      - 'scripts/**'
+      - 'api/**'
+      - 'action.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/build-action-code.yml'
+  workflow_dispatch:
+
+jobs:
+  build-action:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build action bundle
+        run: npm run build:action
+
+      - name: Ensure scripts bundle is up to date
+        run: |
+          if ! git diff --quiet -- scripts/update-markdown-pr-stats.js; then
+            echo 'scripts/update-markdown-pr-stats.js is out of date. Run npm run build:action and commit the result.'
+            git --no-pager diff -- scripts/update-markdown-pr-stats.js
+            exit 1
+          fi

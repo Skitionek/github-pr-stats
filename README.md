@@ -92,6 +92,57 @@ Visit your deployed instance to use our visual parameter debugger:
 - **[🚀 Deployment Guide](docs/deployment.md)** - Setup instructions and configuration  
 - **[👥 User Guide](docs/user-guide.md)** - Tips, use cases, and best practices
 
+## 🔁 GitHub Action (Markdown Updater)
+
+Use this action from any repository to auto-update a markdown region.
+
+```yaml
+name: Update My PR Stats
+
+on:
+  schedule:
+    - cron: '15 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-pr-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update markdown region
+        id: update
+        uses: f14XuanLv/github-pr-stats@main
+        with:
+          username: ${{ github.repository_owner }}
+          file: README.md
+          commit_changes: true
+          commit_message: 'docs: refresh PR stats'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          mode: pr-list
+          theme: dark
+          status: all
+          min_stars: 0
+          limit: 10
+          sort: status,stars_desc
+          stats: total_pr,merged_pr,display_pr
+          fields: repo,stars,pr_title,pr_number,status,created_date,merged_date
+
+      - name: Show update result
+        run: echo "changed=${{ steps.update.outputs.changed }}"
+```
+
+Add this region to your markdown file before running the workflow:
+
+```markdown
+<!-- region github-pr-stats -->
+<!-- endregion -->
+```
+
 ## 🎨 Themes & Customization
 
 Choose from multiple themes and customize every aspect:

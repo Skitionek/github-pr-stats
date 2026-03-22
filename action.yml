@@ -1,0 +1,53 @@
+name: GitHub PR Stats Markdown Updater
+description: Update a markdown region with a table generated from GitHub PR data.
+
+inputs:
+  username:
+    description: GitHub username to analyze.
+    required: false
+    default: ${{ github.repository_owner }}
+  file:
+    description: Markdown file path to update.
+    required: false
+    default: README.md
+  mode:
+    description: Output mode (pr-list or repo-aggregate).
+    required: false
+  theme:
+    description: Theme (dark or light).
+    required: false
+  status:
+    description: PR status filter (used in pr-list mode).
+    required: false
+  min_stars:
+    description: Minimum repository stars.
+    required: false
+  limit:
+    description: Maximum rows in table.
+    required: false
+  sort:
+    description: Sort expression.
+    required: false
+  stats:
+    description: Stats fields list.
+    required: false
+  fields:
+    description: Display fields list.
+    required: false
+  commit_changes:
+    description: Whether to commit and push markdown updates.
+    required: false
+  commit_message:
+    description: Commit message used when markdown changes are detected.
+    required: false
+  github_token:
+    description: GitHub token for API access and optional push operations.
+    required: false
+
+outputs:
+  changed:
+    description: Whether the action changed the target markdown file.
+
+runs:
+  using: node20
+  main: scripts/update-markdown-pr-stats.js
