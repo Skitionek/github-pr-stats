@@ -7,6 +7,7 @@ export class DataProcessor {
   static processGitHubPRs(rawPRs: GitHubPR[]): ProcessedPR[] {
     return rawPRs.map(pr => ({
       repo: `${pr.repository.owner.login}/${pr.repository.name}`,
+      is_private: pr.repository.isPrivate,
       stars: pr.repository.stargazerCount,
       pr_title: pr.title,
       pr_number: pr.number,
@@ -43,6 +44,10 @@ export class DataProcessor {
       return prs
     }
     return prs.filter(pr => pr.stars >= minStars)
+  }
+
+  static filterPublicOnly(prs: ProcessedPR[]): ProcessedPR[] {
+    return prs.filter(pr => !pr.is_private)
   }
 
   static sortPRs(prs: ProcessedPR[], sortParam: string): ProcessedPR[] {
@@ -193,6 +198,7 @@ export class DataProcessor {
     const originalPRs = [...processedPRs]
     
     processedPRs = this.filterByMinStars(processedPRs, params.min_stars || 0)
+    processedPRs = this.filterPublicOnly(processedPRs)
     
     if (params.mode === 'repo-aggregate') {
       let repos = this.aggregateByRepo(processedPRs)

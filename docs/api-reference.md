@@ -18,6 +18,11 @@
 | `status` | string | `all` | PR status filter (PR List mode only):<br>• Single value: `all`, `merged`, `open`, `closed`, `draft`<br>• Multiple values: `merged,open` (comma-separated)<br>• Ignored in Repository Aggregate mode |
 | `min_stars` | number | `0` | Minimum star count filter |
 
+### Privacy Behavior
+
+- Private PRs are included in summary statistics.
+- Private PRs and private repositories are never listed in PR rows or repository aggregate rows.
+
 ### Sorting Parameters
 
 **PR List Mode** (default: `status,stars_desc`):
@@ -69,6 +74,8 @@ Available options:
 - `repos_with_merged_pr`: Repositories with successful contributions
 - `showing_repos`: Showing repositories count
 - `none`: No statistics
+
+Statistics include private contributions, while displayed rows remain public-only.
 
 ## 📊 Usage Examples
 

@@ -26,6 +26,8 @@ Transform your scattered GitHub PR contributions into beautiful, shareable stati
 
 > **Note**: The following demos use public GitHub data accessible via the GitHub API for demonstration purposes only.
 
+> **Privacy behavior**: Private PRs are included in summary statistics, but private PRs and repositories are never listed in table rows.
+
 ### 📊 PR List Mode - Your Contribution Timeline
 ![PR List Demo](https://github-pr-stats-five.vercel.app/api/github-pr-stats?username=f14xuanlv&limit=6&theme=dark)
 

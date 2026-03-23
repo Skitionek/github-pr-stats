@@ -27,6 +27,7 @@ const GET_USER_PRS_QUERY = `
           isDraft
           repository {
             name
+            isPrivate
             owner {
               login
             }

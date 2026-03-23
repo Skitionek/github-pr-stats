@@ -9,6 +9,7 @@ export interface GitHubPR {
   isDraft: boolean
   repository: {
     name: string
+    isPrivate: boolean
     owner: {
       login: string
     }
@@ -19,6 +20,7 @@ export interface GitHubPR {
 
 export interface ProcessedPR {
   repo: string
+  is_private: boolean
   stars: number
   pr_title: string
   pr_number: number

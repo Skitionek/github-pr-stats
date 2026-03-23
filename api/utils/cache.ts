@@ -50,7 +50,7 @@ export class CacheManager {
   }
 
   private getCacheKey(username: string): string {
-    return `github_pr_stats:${username.toLowerCase()}`
+    return `github_pr_stats:v2:${username.toLowerCase()}`
   }
 
   async get(username: string): Promise<GitHubPR[] | null> {
