@@ -50,4 +50,4 @@ outputs:
 
 runs:
   using: node24
-  main: scripts/update-markdown-pr-stats.js
+  main: scripts/update-markdown-pr-stats.cjs

@@ -43,8 +43,8 @@ jobs:
 
       - name: Ensure scripts bundle is up to date
         run: |
-          if ! git diff --quiet -- scripts/update-markdown-pr-stats.js; then
-            echo 'scripts/update-markdown-pr-stats.js is out of date. Run npm run build:action and commit the result.'
-            git --no-pager diff -- scripts/update-markdown-pr-stats.js
+          if ! git diff --quiet -- scripts/update-markdown-pr-stats.cjs; then
+            echo 'scripts/update-markdown-pr-stats.cjs is out of date. Run npm run build:action and commit the result.'
+            git --no-pager diff -- scripts/update-markdown-pr-stats.cjs
             exit 1
           fi
