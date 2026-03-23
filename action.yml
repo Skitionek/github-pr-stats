@@ -49,5 +49,5 @@ outputs:
     description: Whether the action changed the target markdown file.
 
 runs:
-  using: node20
+  using: node24
   main: scripts/update-markdown-pr-stats.js
