@@ -66436,7 +66436,7 @@ var MarkdownGenerator = class _MarkdownGenerator {
   static REPOFIELD_CONFIGS = {
     ..._MarkdownGenerator.FIELD_CONFIGS,
     pr_numbers: { label: "PR Numbers", align: "left", format: (repo) => _MarkdownGenerator.escapeMarkdownCell(repo.pr_numbers.map(
-      (num) => `${repo.repo}#${num}`
+      (num) => `[#${num}](https://github.com/${repo.repo}/pull/${num})`
     ).join(", ")) },
     total: { label: "Total", align: "right", format: (repo) => repo.total.toString() },
     merged: { label: "Merged", align: "right", format: (repo) => repo.merged.toString() },
@@ -66477,11 +66477,11 @@ var MarkdownGenerator = class _MarkdownGenerator {
       const fields = params.fields || "repo,stars,pr_title,pr_number,status,created_date,merged_date";
       markdownTable = this.generatePRTable(prs, fields);
     }
-    return `
-      > ${summary}
-
-      ${markdownTable}
-    `;
+    return [
+      summary,
+      "",
+      markdownTable
+    ].join("\n");
   }
   static generatePRTable(prs, fieldsParam) {
     const fields = this.parseFields(fieldsParam, this.PRFIELD_CONFIGS);
