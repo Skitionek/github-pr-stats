@@ -66478,10 +66478,12 @@ var MarkdownGenerator = class _MarkdownGenerator {
       markdownTable = this.generatePRTable(prs, fields);
     }
     return [
+      "\n",
       summary,
-      "",
-      markdownTable
-    ].join("\n");
+      "\n",
+      markdownTable,
+      "\n"
+    ].join("");
   }
   static generatePRTable(prs, fieldsParam) {
     const fields = this.parseFields(fieldsParam, this.PRFIELD_CONFIGS);
