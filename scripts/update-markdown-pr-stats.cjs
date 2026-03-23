@@ -66420,68 +66420,85 @@ function parseQueryParams(query) {
 }
 
 // api/utils/markdown_generator.ts
-var MarkdownGenerator = class {
+var MarkdownGenerator = class _MarkdownGenerator {
   static FIELD_CONFIGS = {
-    repo: { key: "repo", label: "Repository", align: "left" },
-    stars: { key: "stars", label: "Stars", align: "right" },
-    pr_title: { key: "pr_title", label: "PR Title", align: "left" },
-    pr_number: { key: "pr_number", label: "PR #", align: "right" },
-    status: { key: "status", label: "Status", align: "left" },
-    created_date: { key: "created_date", label: "Created", align: "right" },
-    merged_date: { key: "merged_date", label: "Merged", align: "right" },
-    pr_numbers: { key: "pr_numbers", label: "PR Numbers", align: "left" },
-    total: { key: "total", label: "Total", align: "right" },
-    merged: { key: "merged", label: "Merged", align: "right" },
-    open: { key: "open", label: "Open", align: "right" },
-    draft: { key: "draft", label: "Draft", align: "right" },
-    closed: { key: "closed", label: "Closed", align: "right" },
-    merged_rate: { key: "merged_rate", label: "Merged Rate", align: "right" }
+    repo: { label: "Repository", align: "left", format: (pr) => `[${pr.repo}](https://github.com/${pr.repo})` },
+    stars: { label: "Stars", align: "right", format: (pr) => `${pr.stars.toString()} \u2B50` }
   };
-  static PR_FIELDS = /* @__PURE__ */ new Set([
-    "repo",
-    "stars",
-    "pr_title",
-    "pr_number",
-    "status",
-    "created_date",
-    "merged_date"
-  ]);
-  static REPO_FIELDS = /* @__PURE__ */ new Set([
-    "repo",
-    "stars",
-    "pr_numbers",
-    "total",
-    "merged",
-    "open",
-    "draft",
-    "closed",
-    "merged_rate"
-  ]);
+  static PRFIELD_CONFIGS = {
+    ..._MarkdownGenerator.FIELD_CONFIGS,
+    pr_title: { label: "PR Title", align: "left", format: (pr) => `[${_MarkdownGenerator.escapeMarkdownCell(pr.pr_title)}](${pr.url})` },
+    pr_number: { label: "PR #", align: "right", format: (pr) => `[#${pr.pr_number}](${pr.url})` },
+    status: { label: "Status", align: "left", format: (pr) => pr.status },
+    created_date: { label: "Created", align: "right", format: (pr) => pr.created_date },
+    merged_date: { label: "Merged", align: "right", format: (pr) => pr.merged_date ?? "-" }
+  };
+  static REPOFIELD_CONFIGS = {
+    ..._MarkdownGenerator.FIELD_CONFIGS,
+    pr_numbers: { label: "PR Numbers", align: "left", format: (repo) => _MarkdownGenerator.escapeMarkdownCell(repo.pr_numbers.map(
+      (num) => `${repo.repo}#${num}`
+    ).join(", ")) },
+    total: { label: "Total", align: "right", format: (repo) => repo.total.toString() },
+    merged: { label: "Merged", align: "right", format: (repo) => repo.merged.toString() },
+    open: { label: "Open", align: "right", format: (repo) => repo.open.toString() },
+    draft: { label: "Draft", align: "right", format: (repo) => repo.draft.toString() },
+    closed: { label: "Closed", align: "right", format: (repo) => repo.closed.toString() },
+    merged_rate: { label: "Merged Rate", align: "right", format: (repo) => `${repo.merged_rate}%` }
+  };
+  static STATS_FIELD_CONFIGS = {
+    total_pr: { label: "Total PRs", align: "right", format: (stats) => stats.total_pr.toString() },
+    merged_pr: { label: "Merged PRs", align: "right", format: (stats) => stats.merged_pr.toString() },
+    display_pr: { label: "Display PRs", align: "right", format: (stats) => stats.display_pr.toString() },
+    repos_with_pr: { label: "Repos(\u22651 PR)", align: "right", format: (stats) => stats.repos_with_pr.toString() },
+    repos_with_merged_pr: { label: "Repos(\u22651 Merged PR)", align: "right", format: (stats) => stats.repos_with_merged_pr.toString() },
+    showing_repos: { label: "Showing Repos", align: "right", format: (stats) => stats.showing_repos.toString() }
+  };
   static generate(_username, prs, _stats, params, repos) {
+    let summaryFields;
+    if (params.stats == "all" || !params.stats) {
+      summaryFields = this.STATS_FIELD_CONFIGS;
+    } else {
+      const selectedKeys = params.stats.split(",").map((s) => s.trim()).filter((s) => s in this.STATS_FIELD_CONFIGS);
+      summaryFields = selectedKeys.reduce((acc, key) => {
+        acc[key] = this.STATS_FIELD_CONFIGS[key];
+        return acc;
+      }, {});
+    }
+    const summary = Object.entries(summaryFields).map(([, config]) => {
+      if (!config) return null;
+      return `**${config.label}:** ${config.format(_stats)}`;
+    }).filter((segment) => segment !== null).join(" | ");
+    let markdownTable = "";
     if (params.mode === "repo-aggregate") {
       const repoRows = repos || [];
-      const fields2 = params.fields || "repo,stars,pr_numbers,total,merged,open,draft,closed,merged_rate";
-      return this.generateRepoTable(repoRows, fields2);
+      const fields = params.fields || "repo,stars,pr_numbers,total,merged,open,draft,closed,merged_rate";
+      markdownTable = this.generateRepoTable(repoRows, fields);
+    } else {
+      const fields = params.fields || "repo,stars,pr_title,pr_number,status,created_date,merged_date";
+      markdownTable = this.generatePRTable(prs, fields);
     }
-    const fields = params.fields || "repo,stars,pr_title,pr_number,status,created_date,merged_date";
-    return this.generatePRTable(prs, fields);
+    return `
+      > ${summary}
+
+      ${markdownTable}
+    `;
   }
   static generatePRTable(prs, fieldsParam) {
-    const fields = this.parseFields(fieldsParam, this.PR_FIELDS);
+    const fields = this.parseFields(fieldsParam, this.PRFIELD_CONFIGS);
     const header = [
-      `| ${fields.map((field) => this.FIELD_CONFIGS[field].label).join(" | ")} |`,
-      `| ${fields.map((field) => this.getAlignmentMarker(this.FIELD_CONFIGS[field].align)).join(" | ")} |`
+      `| ${fields.map((field) => this.PRFIELD_CONFIGS[field].label).join(" | ")} |`,
+      `| ${fields.map((field) => this.getAlignmentMarker(this.PRFIELD_CONFIGS[field].align)).join(" | ")} |`
     ];
-    const rows = prs.map((pr) => `| ${fields.map((field) => this.formatPRCell(pr, field)).join(" | ")} |`);
+    const rows = prs.map((pr) => `| ${fields.map((field) => this.PRFIELD_CONFIGS[field].format(pr)).join(" | ")} |`);
     return [...header, ...rows].join("\n");
   }
   static generateRepoTable(repos, fieldsParam) {
-    const fields = this.parseFields(fieldsParam, this.REPO_FIELDS);
+    const fields = this.parseFields(fieldsParam, this.REPOFIELD_CONFIGS);
     const header = [
-      `| ${fields.map((field) => this.FIELD_CONFIGS[field].label).join(" | ")} |`,
-      `| ${fields.map((field) => this.getAlignmentMarker(this.FIELD_CONFIGS[field].align)).join(" | ")} |`
+      `| ${fields.map((field) => this.REPOFIELD_CONFIGS[field].label).join(" | ")} |`,
+      `| ${fields.map((field) => this.getAlignmentMarker(this.REPOFIELD_CONFIGS[field].align)).join(" | ")} |`
     ];
-    const rows = repos.map((repo) => `| ${fields.map((field) => this.formatRepoCell(repo, field)).join(" | ")} |`);
+    const rows = repos.map((repo) => `| ${fields.map((field) => this.REPOFIELD_CONFIGS[field].format(repo)).join(" | ")} |`);
     return [...header, ...rows].join("\n");
   }
   static parseFields(fieldsParam, availableFields) {
@@ -66491,7 +66508,7 @@ var MarkdownGenerator = class {
       fields.push("repo");
     }
     for (const key of fieldKeys) {
-      if (availableFields.has(key)) {
+      if (availableFields.hasOwnProperty(key)) {
         fields.push(key);
       }
     }
@@ -66505,46 +66522,6 @@ var MarkdownGenerator = class {
   }
   static escapeMarkdownCell(value) {
     return value.replace(/\|/g, "\\|").replace(/\n/g, " ");
-  }
-  static formatPRCell(pr, field) {
-    switch (field) {
-      case "repo":
-        return `[${pr.repo}](https://github.com/${pr.repo})`;
-      case "stars":
-        return pr.stars.toString();
-      case "pr_title":
-        return `[${this.escapeMarkdownCell(pr.pr_title)}](${pr.url})`;
-      case "pr_number":
-        return `[#${pr.pr_number}](${pr.url})`;
-      case "status":
-        return pr.status;
-      case "created_date":
-        return pr.created_date;
-      case "merged_date":
-        return pr.merged_date ?? "-";
-    }
-  }
-  static formatRepoCell(repo, field) {
-    switch (field) {
-      case "repo":
-        return `[${repo.repo}](https://github.com/${repo.repo})`;
-      case "stars":
-        return repo.stars.toString();
-      case "pr_numbers":
-        return this.escapeMarkdownCell(repo.pr_numbers.map((num) => `#${num}`).join(", "));
-      case "total":
-        return repo.total.toString();
-      case "merged":
-        return repo.merged.toString();
-      case "open":
-        return repo.open.toString();
-      case "draft":
-        return repo.draft.toString();
-      case "closed":
-        return repo.closed.toString();
-      case "merged_rate":
-        return `${repo.merged_rate}%`;
-    }
   }
 };
 
@@ -66589,29 +66566,7 @@ function commitAndPushChanges(targetFile, message) {
   runGit(["push"]);
 }
 function buildRegionMarkdown(options, data) {
-  const isoNow = (/* @__PURE__ */ new Date()).toISOString();
-  const now = isoNow.slice(0, 19).replace("T", " ") + " UTC";
-  const mode = options.params.mode || "pr-list";
-  const lines = [
-    `> Auto-updated for @${options.params.username} on ${now}`,
-    "",
-    `Mode: ${mode} | Theme: ${options.params.theme || "dark"} | Min stars: ${options.params.min_stars || 0} | Limit: ${options.params.limit || 10}`,
-    `Status: ${options.params.status || "all"} | Sort: ${options.params.sort || ""}`,
-    `Fields: ${options.params.fields || ""}`,
-    `Stats: ${options.params.stats || ""}`,
-    "",
-    "| Metric | Value |",
-    "| --- | ---: |",
-    `| Total PRs | ${data.stats.total_pr} |`,
-    `| Merged PRs | ${data.stats.merged_pr} |`,
-    `| Displayed PRs | ${data.stats.display_pr} |`,
-    `| Repositories with PRs | ${data.stats.repos_with_pr} |`,
-    `| Repositories with merged PRs | ${data.stats.repos_with_merged_pr} |`,
-    `| Showing repositories | ${data.stats.showing_repos} |`,
-    ""
-  ];
-  lines.push(MarkdownGenerator.generate(options.params.username, data.prs, data.stats, options.params, data.repos));
-  return lines.join("\n");
+  return MarkdownGenerator.generate(options.params.username, data.prs, data.stats, options.params, data.repos);
 }
 function replaceRegion(content, markdown) {
   const pattern = new RegExp(`${REGION_START}[\\s\\S]*?${REGION_END}`);

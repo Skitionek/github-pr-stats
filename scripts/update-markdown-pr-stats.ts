@@ -65,30 +65,7 @@ function commitAndPushChanges(targetFile: string, message: string): void {
 }
 
 function buildRegionMarkdown(options: ScriptOptions, data: { prs: ProcessedPR[]; repos?: RepoAggregate[]; stats: PRStats }): string {
-  const isoNow = new Date().toISOString()
-  const now = isoNow.slice(0, 19).replace('T', ' ') + ' UTC'
-  const mode = options.params.mode || 'pr-list'
-  const lines = [
-    `> Auto-updated for @${options.params.username} on ${now}`,
-    '',
-    `Mode: ${mode} | Theme: ${options.params.theme || 'dark'} | Min stars: ${options.params.min_stars || 0} | Limit: ${options.params.limit || 10}`,
-    `Status: ${options.params.status || 'all'} | Sort: ${options.params.sort || ''}`,
-    `Fields: ${options.params.fields || ''}`,
-    `Stats: ${options.params.stats || ''}`,
-    '',
-    '| Metric | Value |',
-    '| --- | ---: |',
-    `| Total PRs | ${data.stats.total_pr} |`,
-    `| Merged PRs | ${data.stats.merged_pr} |`,
-    `| Displayed PRs | ${data.stats.display_pr} |`,
-    `| Repositories with PRs | ${data.stats.repos_with_pr} |`,
-    `| Repositories with merged PRs | ${data.stats.repos_with_merged_pr} |`,
-    `| Showing repositories | ${data.stats.showing_repos} |`,
-    ''
-  ]
-
-  lines.push(MarkdownGenerator.generate(options.params.username, data.prs, data.stats, options.params, data.repos))
-  return lines.join('\n')
+  return MarkdownGenerator.generate(options.params.username, data.prs, data.stats, options.params, data.repos)
 }
 
 function replaceRegion(content: string, markdown: string): string {
