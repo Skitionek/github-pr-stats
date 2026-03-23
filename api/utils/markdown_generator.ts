@@ -86,9 +86,11 @@ export class MarkdownGenerator {
       markdownTable = this.generatePRTable(prs, fields)
     }
     return [
+      '',
       summary,
       '',
-      markdownTable
+      markdownTable,
+      ''
     ].join('\n')
   }
 
