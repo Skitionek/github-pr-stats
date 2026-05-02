@@ -40,9 +40,9 @@ const GET_USER_PRS_QUERY = `
 `
 
 export class GitHubAPIClient {
-  private client: GraphQLClient
+  private readonly client: GraphQLClient
 
-  constructor(token: string) {
+  constructor (token: string) {
     this.client = new GraphQLClient(GITHUB_GRAPHQL_ENDPOINT, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -51,7 +51,7 @@ export class GitHubAPIClient {
     })
   }
 
-  async getAllUserPRs(username: string): Promise<GitHubPR[]> {
+  async getAllUserPRs (username: string): Promise<GitHubPR[]> {
     const allPRs: GitHubPR[] = []
     let hasNextPage = true
     let cursor: string | null = null
@@ -88,7 +88,7 @@ export class GitHubAPIClient {
     return allPRs
   }
 
-  async getUserPRsCount(username: string): Promise<number> {
+  async getUserPRsCount (username: string): Promise<number> {
     try {
       const response: GraphQLResponse = await this.client.request(
         GET_USER_PRS_QUERY,

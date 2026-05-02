@@ -1,4 +1,6 @@
-export function escapeXml(text: string): string {
+import { iconDefinitions } from '../../lib/icons/definitions.js'
+
+export function escapeXml (text: string): string {
   return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -7,19 +9,17 @@ export function escapeXml(text: string): string {
     .replace(/'/g, '&#39;')
 }
 
-import { iconDefinitions } from '../../lib/icons/definitions.js'
-
-export function getStatusIcon(status: string): string {
+export function getStatusIcon (status: string): string {
   const iconMap = {
-    'merged': iconDefinitions.merged,
-    'open': iconDefinitions.open,
-    'draft': iconDefinitions.draft,
-    'closed': iconDefinitions.closed
+    merged: iconDefinitions.merged,
+    open: iconDefinitions.open,
+    draft: iconDefinitions.draft,
+    closed: iconDefinitions.closed
   }
-  
+
   const icon = iconMap[status as keyof typeof iconMap]
   if (!icon) return ''
-  
+
   return icon.replace('<svg', '<svg width="14" height="14"')
 }
 
@@ -37,7 +37,7 @@ export interface Theme {
   mergedStatsColor: string
 }
 
-export function getTheme(theme: 'dark' | 'light'): Theme {
+export function getTheme (theme: 'dark' | 'light'): Theme {
   if (theme === 'light') {
     return {
       background: '#ffffff',
@@ -53,7 +53,7 @@ export function getTheme(theme: 'dark' | 'light'): Theme {
       mergedStatsColor: 'rgba(130, 80, 223, 1)'
     }
   }
-  
+
   return {
     background: '#0d1117',
     titleColor: '#f0f6fc',

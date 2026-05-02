@@ -16,7 +16,7 @@ export const useSVGFetch = () => {
   const abortControllerRef = useRef<AbortController | null>(null)
 
   const fetchSVG = useCallback(async (url: string) => {
-    if (abortControllerRef.current) {
+    if (abortControllerRef.current != null) {
       abortControllerRef.current.abort()
     }
 
@@ -29,7 +29,7 @@ export const useSVGFetch = () => {
       const response = await fetch(url, {
         signal: controller.signal,
         headers: {
-          'Accept': 'image/svg+xml,*/*'
+          Accept: 'image/svg+xml,*/*'
         }
       })
 
@@ -38,7 +38,7 @@ export const useSVGFetch = () => {
       }
 
       const svgText = await response.text()
-      
+
       if (controller.signal.aborted) return
 
       setState({
@@ -60,7 +60,7 @@ export const useSVGFetch = () => {
   }, [])
 
   const reset = useCallback(() => {
-    if (abortControllerRef.current) {
+    if (abortControllerRef.current != null) {
       abortControllerRef.current.abort()
     }
     setState({
