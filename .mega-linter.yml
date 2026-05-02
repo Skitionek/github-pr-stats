@@ -1,0 +1,16 @@
+# MegaLinter configuration
+# https://megalinter.io/latest/configuration/
+
+# ── Copy-paste detection ──────────────────────────────────────────────────────
+# Allow up to 5% duplication (pre-existing clones in src/ and api/).
+COPYPASTE_JSCPD_ARGUMENTS: "--threshold 5"
+
+# ── Secret scanning ───────────────────────────────────────────────────────────
+# docs/ contains intentional example/placeholder credentials; exclude it.
+REPOSITORY_SECRETLINT_FILTER_REGEX_EXCLUDE: "(^|/)docs/"
+
+# ── Vulnerability scanners ────────────────────────────────────────────────────
+# Only fail on CRITICAL CVEs; HIGH/MEDIUM/LOW are reported via SARIF but do not
+# block CI — Dependabot handles patching those separately.
+REPOSITORY_GRYPE_ARGUMENTS: "--fail-on critical"
+REPOSITORY_TRIVY_ARGUMENTS: "--severity CRITICAL"

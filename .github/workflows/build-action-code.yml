@@ -21,6 +21,8 @@ on:
       - '.github/workflows/build-action-code.yml'
   workflow_dispatch:
 
+permissions: read-all
+
 jobs:
   build-action:
     runs-on: ubuntu-latest
