@@ -2,13 +2,26 @@
   "version": "0.2",
   "words": [
     "CODEOWNERS",
+    "ehthumbs",
+    "eslintcache",
     "hmarr",
     "ipynb",
     "marocchino",
+    "maxage",
+    "nosniff",
+    "pids",
+    "PRFIELD",
+    "REPOFIELD",
+    "SAMEORIGIN",
+    "Segoe",
     "pyx",
     "sarif",
     "SARIF",
     "Skitionek",
-    "tfvars"
+    "tfvars",
+    "vercel",
+    "vite",
+    "Xuan",
+    "yourname"
   ]
 }

@@ -318,14 +318,14 @@ body {
   transition: background-color 0.2s;
 }
 
-.generate-btn:hover:not(:disabled),
-.generate-btn:focus:not(:disabled) {
-  background: var(--color-accent-success-hover);
-}
-
 .generate-btn:disabled {
   background: var(--color-accent-disabled);
   cursor: not-allowed;
+}
+
+.generate-btn:hover:not(:disabled),
+.generate-btn:focus:not(:disabled) {
+  background: var(--color-accent-success-hover);
 }
 
 /* Checkbox Styles */
@@ -342,14 +342,14 @@ body {
   row-gap: 1rem;
 }
 
-.checkbox-group.single .checkbox-item {
-  margin-left: 0;
-}
-
 .checkbox-item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.checkbox-group.single .checkbox-item {
+  margin-left: 0;
 }
 
 .checkbox-item.primary {
@@ -374,10 +374,6 @@ body {
   margin: 0;
 }
 
-.checkbox-item input[type="checkbox"]:disabled + label {
-  color: #8c959f;
-}
-
 .checkbox-item label {
   font-size: 0.875rem;
   cursor: pointer;
@@ -386,6 +382,7 @@ body {
 }
 
 .checkbox-item input[type="checkbox"]:disabled + label {
+  color: #8c959f;
   cursor: not-allowed;
 }
 
@@ -545,6 +542,10 @@ body {
   padding: 0.25rem;
 }
 
+.copy-btn {
+  padding: 0.25rem;
+}
+
 .collapse-btn,
 .copy-btn {
   background: none;
@@ -633,10 +634,6 @@ body {
   padding-left: 0.25rem; /* 添加小的左侧内边距以对齐 */
 }
 
-.copy-btn {
-  padding: 0.25rem;
-}
-
 .url-content {
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border-default);
@@ -682,6 +679,8 @@ body {
   padding: 2rem;
 }
 
+/* stylelint-disable no-descending-specificity */
+
 .placeholder-content,
 .error-content {
   padding: 3rem 2rem;
@@ -718,6 +717,8 @@ body {
   margin-top: 0.5rem !important;
   opacity: 0.8;
 }
+
+/* stylelint-enable no-descending-specificity */
 
 .loading-spinner {
   width: 48px;
@@ -813,7 +814,7 @@ body {
     padding: 1rem;
   }
   
-  .url-section {
+  .url-generator .url-section {
     padding: 0.75rem 1rem 0.75rem 0.5rem; /* 移动端也减少上下 padding */
   }
   
