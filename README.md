@@ -1,6 +1,6 @@
-> [中文文档](./README_zh.md) | Read this document in Chinese
-
 # GitHub PR Stats
+
+> [中文文档](./README_zh.md) | Read this document in Chinese
 
 <div align="center">
   <img src="https://img.shields.io/badge/version-1.0.1-white.svg?style=flat-square&labelColor=black&color=8250df&logo=data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTYgMTYiIGZpbGw9InJnYmEoMTgwLCAxMjAsIDI1NSwgMSkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+ICAgPHBhdGggZD0iTTUuNDUgNS4xNTRBNC4yNSA0LjI1IDAgMCAwIDkuMjUgNy41aDEuMzc4YTIuMjUxIDIuMjUxIDAgMSAxIDAgMS41SDkuMjVBNS43MzQgNS43MzQgMCAwIDEgNSA3LjEyM3YzLjUwNWEyLjI1IDIuMjUgMCAxIDEtMS41IDBWNS4zNzJhMi4yNSAyLjI1IDAgMSAxIDEuOTUtLjIxOFpNNC4yNSAxMy41YS43NS43NSAwIDEgMCAwLTEuNS43NS43NSAwIDAgMCAwIDEuNVptOC41LTQuNWEuNzUuNzUgMCAxIDAgMC0xLjUuNzUuNzUgMCAwIDAgMCAxLjVaTTUgMy4yNWEuNzUuNzUgMCAxIDAgMCAuMDA1VjMuMjVaIi8+IDwvc3ZnPg==" alt="Version" height="24">
@@ -20,7 +20,8 @@
 
 **🏆 Showcase your open source achievements and make every merged PR a badge of honor.**
 
-Transform your scattered GitHub PR contributions into beautiful, shareable statistics. Perfect for resumes, portfolios, and technical recruiting.
+Transform your scattered GitHub PR contributions into beautiful, shareable
+statistics. Perfect for resumes, portfolios, and technical recruiting.
 
 ## ✨ Live Demo
 
@@ -41,7 +42,7 @@ Transform your scattered GitHub PR contributions into beautiful, shareable stati
 ### 1. Deploy Instantly
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/f14xuanlv/github-pr-stats)
 
-For detailed setup instructions, see **[📚 Documentation](#📚-documentation)** → **[🚀 Deployment Guide](docs/deployment.md)**
+For detailed setup instructions, see **[📚 Documentation](#-documentation)** → **[🚀 Deployment Guide](docs/deployment.md)**
 
 ### 2. Add to Your Profile
 ```markdown

@@ -18,7 +18,8 @@
 
 **🏆 展示你的开源贡献成就，让每一个被合并的PR都成为你的荣誉勋章。**
 
-想象一下：你向 Linux kernel、OpenCV、NumPy、React 提交的PR被合并了，这些珍贵的贡献却埋没在GitHub的历史记录中。github-pr-stats 帮你把这些成就以精美的表格形式展示出来，让你的开源贡献一目了然。
+想象一下：你向 Linux kernel、OpenCV、NumPy、React 提交的PR被合并了，这些珍贵的贡献却埋没在
+GitHub 的历史记录中。github-pr-stats 帮你把这些成就以精美的表格形式展示出来，让你的开源贡献一目了然。
 
 ## ✨ 效果预览
 
@@ -39,7 +40,7 @@
 ### 1. 一键部署
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/f14xuanlv/github-pr-stats)
 
-详细配置说明请查看 **[📚 文档](#📚-文档)** 中的 **[🚀 部署指南](docs/deployment_zh.md)**
+详细配置说明请查看 **[📚 文档](#-文档)** 中的 **[🚀 部署指南](docs/deployment_zh.md)**
 
 ### 2. 添加到个人资料
 ```markdown
