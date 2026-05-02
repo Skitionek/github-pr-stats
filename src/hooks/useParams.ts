@@ -17,7 +17,7 @@ const DEFAULT_PARAMS: APIParams = {
 export const useParams = () => {
   const [params, setParams] = useState<APIParams>(() => {
     const savedParams = loadParamsFromLocalStorage()
-    return savedParams ? { ...DEFAULT_PARAMS, ...savedParams } : DEFAULT_PARAMS
+    return (savedParams != null) ? { ...DEFAULT_PARAMS, ...savedParams } : DEFAULT_PARAMS
   })
 
   // Save params to localStorage whenever they change
@@ -31,7 +31,7 @@ export const useParams = () => {
   ) => {
     setParams(prev => {
       const newParams = { ...prev, [key]: value }
-      
+
       // Auto-update related params when mode changes
       if (key === 'mode') {
         if (value === 'repo-aggregate') {
@@ -45,7 +45,7 @@ export const useParams = () => {
           newParams.fields = 'repo,stars,pr_title,pr_number,status,created_date,merged_date'
         }
       }
-      
+
       return newParams
     })
   }, [])
@@ -56,7 +56,7 @@ export const useParams = () => {
 
   const generateURL = useCallback((baseURL: string = '') => {
     const searchParams = new URLSearchParams()
-    
+
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== '') {
         if (key === 'username' && !value) return
@@ -139,8 +139,8 @@ export const useSortCards = (initialSort: string) => {
 
   const getAvailableCardsForGroup = useCallback((group: string) => {
     const selectedInGroup = selectedCards.find(card => card.group === group)
-    return availableCards.filter(card => 
-      card.group === group && (!selectedInGroup || selectedInGroup.value !== card.value)
+    return availableCards.filter(card =>
+      card.group === group && ((selectedInGroup == null) || selectedInGroup.value !== card.value)
     )
   }, [selectedCards])
 

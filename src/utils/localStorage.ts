@@ -19,7 +19,7 @@ export const loadParamsFromLocalStorage = (): Partial<APIParams> | null => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (!stored) return null
-    
+
     const parsed = JSON.parse(stored)
     return parsed
   } catch (error) {

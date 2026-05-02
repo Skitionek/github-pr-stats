@@ -78,3 +78,5 @@ my-design-docs/
 
 # Code Agent
 .claude/
+
+megalinter-reports/

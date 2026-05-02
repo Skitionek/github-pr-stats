@@ -4,19 +4,19 @@
 
 ### 基础参数
 
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `username` | string | **必填** | GitHub 用户名 |
-| `mode` | string | `pr-list` | 展示模式：<br>• `pr-list`：PR详细列表<br>• `repo-aggregate`：仓库聚合统计 |
-| `theme` | string | `dark` | 主题样式：`dark`（深色）、`light`（浅色） |
-| `limit` | number | `10` | 显示数量限制（在筛选和排序后选取前limit个记录） |
+| 参数       | 类型   | 默认值    | 说明                                                                   |
+|------------|--------|-----------|------------------------------------------------------------------------|
+| `username` | string | **必填**  | GitHub 用户名                                                          |
+| `mode`     | string | `pr-list` | 展示模式：<br>• `pr-list`：PR详细列表<br>• `repo-aggregate`：仓库聚合统计 |
+| `theme`    | string | `dark`    | 主题样式：`dark`（深色）、`light`（浅色）                                    |
+| `limit`    | number | `10`      | 显示数量限制（在筛选和排序后选取前limit个记录）                          |
 
 ### 筛选参数
 
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `status` | string | `all` | PR状态筛选（仅PR List模式）：<br>• 单值：`all`、`merged`、`open`、`closed`、`draft`<br>• 多值：`merged,open`（逗号分隔）<br>• Repository Aggregate模式忽略此参数 |
-| `min_stars` | number | `0` | 最小star数筛选 |
+| 参数        | 类型   | 默认值 | 说明                                                                                                                                                  |
+|-------------|--------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `status`    | string | `all`  | PR状态筛选（仅PR List模式）：<br>• 单值：`all`、`merged`、`open`、`closed`、`draft`<br>• 多值：`merged,open`（逗号分隔）<br>• Repository Aggregate模式忽略此参数 |
+| `min_stars` | number | `0`    | 最小star数筛选                                                                                                                                        |
 
 ### 排序参数
 

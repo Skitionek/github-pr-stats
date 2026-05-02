@@ -2,13 +2,13 @@ import { createClient } from 'redis'
 import type { GitHubPR } from '../types.js'
 
 export class CacheManager {
-  private redis: ReturnType<typeof createClient> | null
+  private readonly redis: ReturnType<typeof createClient> | null
   private connected: boolean = false
-  private enabled: boolean = false
+  private readonly enabled: boolean = false
 
-  constructor() {
+  constructor () {
     const redisUrl = process.env.REDIS_URL?.trim()
-    
+
     if (!redisUrl) {
       console.log('Redis not configured (REDIS_URL not set), caching disabled')
       this.redis = null
@@ -17,8 +17,8 @@ export class CacheManager {
     }
 
     try {
-      this.redis = createClient({ 
-        url: redisUrl 
+      this.redis = createClient({
+        url: redisUrl
       })
       this.enabled = true
 
@@ -39,8 +39,8 @@ export class CacheManager {
     }
   }
 
-  private async ensureConnected() {
-    if (!this.enabled || !this.redis) {
+  private async ensureConnected () {
+    if (!this.enabled || (this.redis == null)) {
       return false
     }
     if (!this.connected && !this.redis.isReady) {
@@ -49,20 +49,20 @@ export class CacheManager {
     return true
   }
 
-  private getCacheKey(username: string): string {
+  private getCacheKey (username: string): string {
     return `github_pr_stats:${username.toLowerCase()}`
   }
 
-  async get(username: string): Promise<GitHubPR[] | null> {
+  async get (username: string): Promise<GitHubPR[] | null> {
     try {
       const connected = await this.ensureConnected()
-      if (!connected || !this.redis) {
+      if (!connected || (this.redis == null)) {
         return null
       }
-      
+
       const cacheKey = this.getCacheKey(username)
       const cached = await this.redis.get(cacheKey)
-      
+
       if (!cached) {
         return null
       }
@@ -74,13 +74,13 @@ export class CacheManager {
     }
   }
 
-  async set(username: string, data: GitHubPR[], ttlSeconds: number = 300): Promise<void> {
+  async set (username: string, data: GitHubPR[], ttlSeconds: number = 300): Promise<void> {
     try {
       const connected = await this.ensureConnected()
-      if (!connected || !this.redis) {
+      if (!connected || (this.redis == null)) {
         return
       }
-      
+
       const cacheKey = this.getCacheKey(username)
       await this.redis.setEx(cacheKey, ttlSeconds, JSON.stringify(data))
     } catch (error) {
@@ -88,13 +88,13 @@ export class CacheManager {
     }
   }
 
-  async exists(username: string): Promise<boolean> {
+  async exists (username: string): Promise<boolean> {
     try {
       const connected = await this.ensureConnected()
-      if (!connected || !this.redis) {
+      if (!connected || (this.redis == null)) {
         return false
       }
-      
+
       const cacheKey = this.getCacheKey(username)
       const result = await this.redis.exists(cacheKey)
       return result === 1
@@ -104,13 +104,13 @@ export class CacheManager {
     }
   }
 
-  async delete(username: string): Promise<void> {
+  async delete (username: string): Promise<void> {
     try {
       const connected = await this.ensureConnected()
-      if (!connected || !this.redis) {
+      if (!connected || (this.redis == null)) {
         return
       }
-      
+
       const cacheKey = this.getCacheKey(username)
       await this.redis.del(cacheKey)
     } catch (error) {
@@ -118,13 +118,13 @@ export class CacheManager {
     }
   }
 
-  async getTTL(username: string): Promise<number> {
+  async getTTL (username: string): Promise<number> {
     try {
       const connected = await this.ensureConnected()
-      if (!connected || !this.redis) {
+      if (!connected || (this.redis == null)) {
         return -1
       }
-      
+
       const cacheKey = this.getCacheKey(username)
       return await this.redis.ttl(cacheKey)
     } catch (error) {
@@ -133,9 +133,9 @@ export class CacheManager {
     }
   }
 
-  async disconnect(): Promise<void> {
+  async disconnect (): Promise<void> {
     try {
-      if (this.redis && this.redis.isReady) {
+      if ((this.redis != null) && this.redis.isReady) {
         await this.redis.quit()
       }
       this.connected = false

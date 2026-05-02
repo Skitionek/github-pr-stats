@@ -7,7 +7,7 @@
 
 /* CSS Custom Properties for consistent colors */
 :root {
-  --color-bg-primary: #ffffff;
+  --color-bg-primary: #fff;
   --color-bg-secondary: #f6f8fa;
   --color-bg-tertiary: #24292f;
   --color-border-default: #d1d9e0;
@@ -26,7 +26,7 @@
   --border-radius-large: 8px;
   --border-radius-circle: 50%;
   --transition-default: all 0.2s;
-  --shadow-default: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-default: 0 2px 8px rgb(0 0 0 / 10%);
 }
 
 html {
@@ -34,8 +34,8 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   line-height: 1.5;
   color: var(--color-text-primary);
   background-color: var(--color-bg-primary);
@@ -53,7 +53,7 @@ body {
 }
 
 .mode-notice p {
-  margin: 0 0 4px 0;
+  margin: 0 0 4px;
   font-size: 0.875rem;
   color: #0969da;
 }
@@ -98,7 +98,7 @@ body {
   color: var(--color-accent-primary);
 }
 
-.btn-interactive:not(:hover):not(:focus) {
+.btn-interactive:not(:hover, :focus) {
   background: none;
   border-color: var(--color-border-default);
   color: var(--color-text-secondary);
@@ -108,6 +108,7 @@ body {
   /* 使用 dvh 单位来解决移动端和任务栏遮挡问题 */
   height: 100vh;
   height: 100dvh; /* 动态视口高度，会考虑浏览器UI元素 */
+
   /* 作为后备方案，使用 JavaScript 计算的 CSS 变量 */
   height: var(--app-height, 100vh);
   display: flex;
@@ -293,7 +294,7 @@ body {
 .param-select:focus {
   outline: none;
   border-color: var(--color-accent-primary);
-  box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+  box-shadow: 0 0 0 3px rgb(9 105 218 / 10%);
 }
 
 .input-with-button {
@@ -359,8 +360,7 @@ body {
 .checkbox-subgroup {
   margin-left: 1.5rem;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
   gap: 1rem;
 }
 
@@ -394,7 +394,7 @@ body {
   border: 1px solid var(--color-border-default);
   border-radius: var(--border-radius-large);
   overflow: hidden;
-  background: #ffffff;
+  background: #fff;
 }
 
 .sort-selected-breadcrumb {
@@ -469,7 +469,7 @@ body {
 
 .sort-card.selected {
   background: #0969da;
-  color: #ffffff;
+  color: #fff;
   cursor: grab;
 }
 
@@ -485,7 +485,7 @@ body {
 
 .sort-card.available:hover {
   background: #0969da;
-  color: #ffffff;
+  color: #fff;
 }
 
 .drag-handle {
@@ -567,8 +567,8 @@ body {
   color: var(--color-accent-primary);
 }
 
-.collapse-btn:not(:hover):not(:focus),
-.copy-btn:not(:hover):not(:focus) {
+.collapse-btn:not(:hover, :focus),
+.copy-btn:not(:hover, :focus) {
   background: none;
   border-color: var(--color-border-default);
   color: var(--color-text-secondary);
@@ -646,7 +646,7 @@ body {
 }
 
 .url-content code {
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
   font-size: 0.6875rem;
   color: var(--color-text-primary);
   word-break: break-all;
@@ -695,7 +695,7 @@ body {
 .error-content h3 {
   font-size: 1.25rem;
   color: var(--color-text-primary);
-  margin: 0 0 1rem 0;
+  margin: 0 0 1rem;
 }
 
 .placeholder-content p,
@@ -736,13 +736,14 @@ body {
 .preview-svg {
   flex: 1;
   width: 100%;
-  overflow-y: auto; /* 垂直滚动条 */
-  overflow-x: auto; /* 水平滚动条 */
+  overflow: auto; /* 垂直滚动条 */ /* 水平滚动条 */
+
   /* 根据内容大小决定布局 */
   display: flex;
   align-items: safe center; /* safe 关键字确保内容超出时从顶部开始 */
   justify-content: safe center; /* 水平居中，但内容超出时从左侧开始 */
   padding: 2rem;
+
   /* 自定义滚动条样式 */
   scrollbar-width: thin;
   scrollbar-color: var(--color-border-default) var(--color-bg-secondary);
@@ -785,13 +786,13 @@ body {
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
   .checkbox-group.single {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .checkbox-subgroup {
     flex-direction: column;
   }
@@ -858,7 +859,7 @@ body {
 }
 
 /* 超小屏幕优化 */
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .app-header {
     padding: 0.75rem;
   }
@@ -935,6 +936,7 @@ button:focus:not(:focus-visible) {
     background: var(--color-bg-primary);
   }
 }
+
 /* Enhanced checkbox styles for checked and disabled state */
 .checkbox-item input[type="checkbox"]:checked:disabled {
   background-color: var(--color-accent-disabled);

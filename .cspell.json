@@ -1,4 +1,14 @@
 {
   "version": "0.2",
-  "words": ["CODEOWNERS", "hmarr", "ipynb", "marocchino", "pyx", "sarif", "SARIF", "Skitionek", "tfvars"]
+  "words": [
+    "CODEOWNERS",
+    "hmarr",
+    "ipynb",
+    "marocchino",
+    "pyx",
+    "sarif",
+    "SARIF",
+    "Skitionek",
+    "tfvars"
+  ]
 }

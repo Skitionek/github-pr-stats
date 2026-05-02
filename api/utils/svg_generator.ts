@@ -26,20 +26,20 @@ export class SVGGenerator {
     merged_rate: { key: 'merged_rate', label: 'Merged Rate', width: 90, align: 'center' }
   }
 
-  static generate(
+  static generate (
     username: string,
     prs: ProcessedPR[],
     stats: PRStats,
     params: APIParams,
     repos?: RepoAggregate[]
   ): string {
-    if (params.mode === 'repo-aggregate' && repos) {
+    if (params.mode === 'repo-aggregate' && (repos != null)) {
       return this.generateRepoAggregateView(username, repos, stats, params)
     }
     return this.generatePRListView(username, prs, stats, params)
   }
 
-  private static generatePRListView(
+  private static generatePRListView (
     username: string,
     prs: ProcessedPR[],
     stats: PRStats,
@@ -48,46 +48,46 @@ export class SVGGenerator {
     const theme = getTheme(params.theme || 'dark')
     const fields = this.parseFields(params.fields || 'repo,stars,pr_title,pr_number,status,created_date,merged_date')
     const statsToShow = this.parseStats(params.stats || 'all')
-    
+
     const tableWidth = this.calculateTableWidth(fields)
     const rowHeight = 35
     const headerHeight = 40
     const titleHeight = 50
-    
+
     // Calculate stats dimensions
     const statsInfo = this.calculateStatsLayout(stats, statsToShow, tableWidth)
     const statsHeight = statsInfo.height
     const effectiveWidth = statsInfo.width
-    
+
     const statsMargin = statsHeight > 0 ? 10 : 0 // Add margin after stats
     const totalHeight = titleHeight + statsHeight + statsMargin + headerHeight + (prs.length * rowHeight) + 40
-    
+
     let svg = this.createSVGHeader(effectiveWidth, totalHeight, theme)
-    
+
     let currentY = 20
-    
+
     svg += this.renderTitle(username, effectiveWidth, currentY, theme)
     currentY += titleHeight
-    
+
     if (statsHeight > 0) {
       svg += this.renderStats(stats, statsToShow, effectiveWidth, tableWidth, currentY, theme)
       currentY += statsHeight + statsMargin
     }
-    
+
     // Calculate table offset for centering when table is narrower than stats
     const tableOffsetX = Math.max(0, (effectiveWidth - tableWidth) / 2)
-    
+
     svg += this.renderTableHeader(fields, currentY, theme, tableOffsetX)
     currentY += headerHeight
-    
+
     svg += this.renderTableBody(prs, fields, currentY, theme, tableOffsetX)
-    
+
     svg += '</svg>'
-    
+
     return svg
   }
 
-  private static generateRepoAggregateView(
+  private static generateRepoAggregateView (
     username: string,
     repos: RepoAggregate[],
     stats: PRStats,
@@ -96,75 +96,75 @@ export class SVGGenerator {
     const theme = getTheme(params.theme || 'dark')
     const fields = this.parseFields(params.fields || 'repo,stars,pr_numbers,total,merged,open,draft,closed,merged_rate')
     const statsToShow = this.parseStats(params.stats || 'total_pr,merged_pr,display_pr')
-    
+
     const tableWidth = this.calculateTableWidth(fields)
     const rowHeight = 35
     const headerHeight = 40
     const titleHeight = 50
-    
+
     // Calculate stats dimensions
     const statsInfo = this.calculateStatsLayout(stats, statsToShow, tableWidth)
     const statsHeight = statsInfo.height
     const effectiveWidth = statsInfo.width
-    
+
     const statsMargin = statsHeight > 0 ? 10 : 0
     const totalHeight = titleHeight + statsHeight + statsMargin + headerHeight + (repos.length * rowHeight) + 40
-    
+
     let svg = this.createSVGHeader(effectiveWidth, totalHeight, theme)
-    
+
     let currentY = 20
-    
+
     svg += this.renderTitle(username, effectiveWidth, currentY, theme)
     currentY += titleHeight
-    
+
     if (statsHeight > 0) {
       svg += this.renderStats(stats, statsToShow, effectiveWidth, tableWidth, currentY, theme)
       currentY += statsHeight + statsMargin
     }
-    
+
     const tableOffsetX = Math.max(0, (effectiveWidth - tableWidth) / 2)
-    
+
     svg += this.renderTableHeader(fields, currentY, theme, tableOffsetX)
     currentY += headerHeight
-    
+
     svg += this.renderRepoTableBody(repos, fields, currentY, theme, tableOffsetX)
-    
+
     svg += '</svg>'
-    
+
     return svg
   }
 
-  private static parseFields(fieldsParam: string): FieldConfig[] {
+  private static parseFields (fieldsParam: string): FieldConfig[] {
     const fieldKeys = fieldsParam.split(',').map(f => f.trim())
     const fields: FieldConfig[] = []
-    
+
     if (!fieldKeys.includes('repo')) {
       fields.push(this.FIELD_CONFIGS.repo)
     }
-    
+
     for (const key of fieldKeys) {
       if (this.FIELD_CONFIGS[key]) {
         fields.push(this.FIELD_CONFIGS[key])
       }
     }
-    
+
     return fields
   }
 
-  private static parseStats(statsParam: string): Array<keyof PRStats> {
+  private static parseStats (statsParam: string): Array<keyof PRStats> {
     if (statsParam === 'none' || !statsParam) return []
     if (statsParam === 'all') return ['total_pr', 'merged_pr', 'display_pr', 'repos_with_pr', 'repos_with_merged_pr', 'showing_repos']
-    
+
     return statsParam.split(',')
       .map(s => s.trim())
       .filter(s => ['total_pr', 'merged_pr', 'display_pr', 'showing_repos', 'repos_with_pr', 'repos_with_merged_pr'].includes(s)) as Array<keyof PRStats>
   }
 
-  private static calculateTableWidth(fields: FieldConfig[]): number {
+  private static calculateTableWidth (fields: FieldConfig[]): number {
     return fields.reduce((sum, field) => sum + field.width, 0) + 40
   }
 
-  private static calculateStatsLayout(stats: PRStats, statsToShow: Array<keyof PRStats>, tableWidth: number): { width: number, height: number, rows: Array<Array<keyof PRStats>> } {
+  private static calculateStatsLayout (stats: PRStats, statsToShow: Array<keyof PRStats>, tableWidth: number): { width: number, height: number, rows: Array<Array<keyof PRStats>> } {
     if (statsToShow.length === 0) {
       return { width: 0, height: 0, rows: [] }
     }
@@ -207,17 +207,17 @@ export class SVGGenerator {
     // Minimum stats width to ensure good appearance
     const minStatsWidth = 400
     const requiredStatsWidth = Math.max(minStatsWidth, maxWidth)
-    
+
     // Stats width should match table width when table is wider than minimum stats width
     const finalWidth = Math.max(tableWidth, requiredStatsWidth)
-    
+
     // Height: 25px per row + 20px padding for clean spacing
     const height = rows.length > 0 ? rows.length * 25 + 20 : 0
 
     return { width: finalWidth, height, rows }
   }
 
-  private static createSVGHeader(width: number, height: number, theme: Theme): string {
+  private static createSVGHeader (width: number, height: number, theme: Theme): string {
     return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" 
       xmlns="http://www.w3.org/2000/svg" style="background-color: ${theme.background};">
       <defs>
@@ -239,13 +239,13 @@ export class SVGGenerator {
       </defs>`
   }
 
-  private static renderTitle(username: string, width: number, y: number, _theme: Theme): string {
+  private static renderTitle (username: string, width: number, y: number, _theme: Theme): string {
     return `<text x="${width / 2}" y="${y + 25}" text-anchor="middle" class="title">
       GitHub PR Contributions - ${escapeXml(username)}
     </text>`
   }
 
-  private static renderStats(
+  private static renderStats (
     stats: PRStats,
     statsToShow: Array<keyof PRStats>,
     totalWidth: number,
@@ -269,22 +269,22 @@ export class SVGGenerator {
     const statsX = (totalWidth - statsWidth) / 2
     const centerX = totalWidth / 2
     const centerY = y + statsLayout.height / 2
-    
+
     let svg = `<rect x="${statsX}" y="${y}" width="${statsWidth}" height="${statsLayout.height}" 
       fill="${theme.statsBg}" stroke="${theme.borderColor}" rx="6"/>`
-    
+
     // Create a centered group for all stats text
-    svg += `<g text-anchor="middle" dominant-baseline="central">`
-    
+    svg += '<g text-anchor="middle" dominant-baseline="central">'
+
     // Render each row, vertically centered around the group center
     const rowCount = statsLayout.rows.length
     const totalRowsHeight = (rowCount - 1) * 25 // Space between rows
     const startOffset = -totalRowsHeight / 2
-    
+
     for (let rowIndex = 0; rowIndex < statsLayout.rows.length; rowIndex++) {
       const row = statsLayout.rows[rowIndex]
       const rowY = centerY + startOffset + (rowIndex * 25)
-      
+
       const statsElements = row
         .map(key => {
           const text = `${labels[key]}: ${stats[key]}`
@@ -292,110 +292,110 @@ export class SVGGenerator {
           return `<tspan fill="${color}">${escapeXml(text)}</tspan>`
         })
         .join(`<tspan fill="${theme.statsColor}">   |   </tspan>`)
-      
+
       svg += `<text x="${centerX}" y="${rowY}" class="stats" xml:space="preserve">
         ${statsElements}
       </text>`
     }
-    
-    svg += `</g>`
-    
+
+    svg += '</g>'
+
     return svg
   }
 
-  private static renderTableHeader(fields: FieldConfig[], y: number, theme: Theme, offsetX: number = 0): string {
+  private static renderTableHeader (fields: FieldConfig[], y: number, theme: Theme, offsetX: number = 0): string {
     const baseX = 20 + offsetX
     let svg = `<rect x="${baseX}" y="${y}" width="${this.calculateTableWidth(fields) - 40}" height="35" 
       fill="${theme.headerBg}" stroke="${theme.borderColor}"/>`
-    
+
     let currentX = baseX
     for (const field of fields) {
       const textX = this.getTextX(currentX, field.width, field.align)
       svg += `<text x="${textX}" y="${y + 22}" class="header" text-anchor="${this.getTextAnchor(field.align)}">
         ${escapeXml(field.label)}
       </text>`
-      
+
       if (currentX + field.width < this.calculateTableWidth(fields) - 20 + baseX) {
         svg += `<line x1="${currentX + field.width}" y1="${y}" x2="${currentX + field.width}" y2="${y + 35}" 
           stroke="${theme.borderColor}"/>`
       }
-      
+
       currentX += field.width
     }
-    
+
     return svg
   }
 
-  private static renderTableBody(prs: ProcessedPR[], fields: FieldConfig[], startY: number, theme: Theme, offsetX: number = 0): string {
+  private static renderTableBody (prs: ProcessedPR[], fields: FieldConfig[], startY: number, theme: Theme, offsetX: number = 0): string {
     let svg = ''
     const tableWidth = this.calculateTableWidth(fields) - 40
     const baseX = 20 + offsetX
-    
+
     for (let i = 0; i < prs.length; i++) {
       const pr = prs[i]
       const y = startY + (i * 35)
       const bgColor = i % 2 === 0 ? theme.rowEvenBg : theme.rowOddBg
-      
+
       svg += `<rect x="${baseX}" y="${y}" width="${tableWidth}" height="35" 
         fill="${bgColor}" stroke="${theme.borderColor}"/>`
-      
+
       let currentX = baseX
       for (const field of fields) {
         const value = this.formatFieldValue(pr, field.key)
         const textX = this.getTextX(currentX, field.width, field.align)
-        
+
         if (field.key === 'status') {
           const icon = getStatusIcon(pr.status)
           svg += `<g transform="translate(${textX - 7}, ${y + 11})">${icon}</g>`
         } else {
           svg += this.renderClippedText(value, textX, y + 22, currentX, y, field.key, field.align)
         }
-        
+
         if (currentX + field.width < this.calculateTableWidth(fields) - 20 + baseX) {
           svg += `<line x1="${currentX + field.width}" y1="${y}" x2="${currentX + field.width}" y2="${y + 35}" 
             stroke="${theme.borderColor}"/>`
         }
-        
+
         currentX += field.width
       }
     }
-    
+
     return svg
   }
 
-  private static renderRepoTableBody(repos: RepoAggregate[], fields: FieldConfig[], startY: number, theme: Theme, offsetX: number = 0): string {
+  private static renderRepoTableBody (repos: RepoAggregate[], fields: FieldConfig[], startY: number, theme: Theme, offsetX: number = 0): string {
     let svg = ''
     const tableWidth = this.calculateTableWidth(fields) - 40
     const baseX = 20 + offsetX
-    
+
     for (let i = 0; i < repos.length; i++) {
       const repo = repos[i]
       const y = startY + (i * 35)
       const bgColor = i % 2 === 0 ? theme.rowEvenBg : theme.rowOddBg
-      
+
       svg += `<rect x="${baseX}" y="${y}" width="${tableWidth}" height="35" 
         fill="${bgColor}" stroke="${theme.borderColor}"/>`
-      
+
       let currentX = baseX
       for (const field of fields) {
         const value = this.formatRepoFieldValue(repo, field.key)
         const textX = this.getTextX(currentX, field.width, field.align)
-        
+
         svg += this.renderClippedText(value, textX, y + 22, currentX, y, field.key, field.align)
-        
+
         if (currentX + field.width < this.calculateTableWidth(fields) - 20 + baseX) {
           svg += `<line x1="${currentX + field.width}" y1="${y}" x2="${currentX + field.width}" y2="${y + 35}" 
             stroke="${theme.borderColor}"/>`
         }
-        
+
         currentX += field.width
       }
     }
-    
+
     return svg
   }
 
-  private static formatRepoFieldValue(repo: RepoAggregate, fieldKey: string): string {
+  private static formatRepoFieldValue (repo: RepoAggregate, fieldKey: string): string {
     switch (fieldKey) {
       case 'repo':
         return repo.repo
@@ -420,7 +420,7 @@ export class SVGGenerator {
     }
   }
 
-  private static formatFieldValue(pr: ProcessedPR, fieldKey: string): string {
+  private static formatFieldValue (pr: ProcessedPR, fieldKey: string): string {
     switch (fieldKey) {
       case 'repo':
         return pr.repo
@@ -440,7 +440,7 @@ export class SVGGenerator {
     }
   }
 
-  private static getTextX(x: number, width: number, align: 'left' | 'center' | 'right'): number {
+  private static getTextX (x: number, width: number, align: 'left' | 'center' | 'right'): number {
     switch (align) {
       case 'left':
         return x + 8
@@ -451,7 +451,7 @@ export class SVGGenerator {
     }
   }
 
-  private static getTextAnchor(align: 'left' | 'center' | 'right'): string {
+  private static getTextAnchor (align: 'left' | 'center' | 'right'): string {
     switch (align) {
       case 'left':
         return 'start'
@@ -462,7 +462,7 @@ export class SVGGenerator {
     }
   }
 
-  private static getClipPathId(fieldKey: string): string | null {
+  private static getClipPathId (fieldKey: string): string | null {
     switch (fieldKey) {
       case 'pr_title':
         return 'cell-clip-250'
@@ -475,13 +475,13 @@ export class SVGGenerator {
     }
   }
 
-  private static renderClippedText(
-    text: string, 
-    x: number, 
-    y: number, 
-    cellX: number, 
-    cellY: number, 
-    fieldKey: string, 
+  private static renderClippedText (
+    text: string,
+    x: number,
+    y: number,
+    cellX: number,
+    cellY: number,
+    fieldKey: string,
     align: 'left' | 'center' | 'right'
   ): string {
     const clipPathId = this.getClipPathId(fieldKey)

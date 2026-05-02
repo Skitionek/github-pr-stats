@@ -59,14 +59,14 @@ For detailed setup instructions, see **[📚 Documentation](#📚-documentation)
 
 ## 🎯 Why Choose GitHub PR Stats?
 
-| Feature | Benefit |
-|---------|---------|
+| Feature                  | Benefit                                                          |
+|--------------------------|------------------------------------------------------------------|
 | **🎨 Two Display Modes** | PR timeline or repository overview - choose what fits your story |
-| **⚡ Smart Caching** | Fast loading with Redis - your visitors won't wait |
-| **🎮 Visual Interface** | No code needed - configure everything with our web UI |
-| **🌟 Quality Focus** | Filter by stars to highlight your high-impact contributions |
-| **📱 Works Everywhere** | SVG output works in GitHub, websites, presentations, anywhere |
-| **🔒 Privacy First** | Your tokens stay secure on the server |
+| **⚡ Smart Caching**      | Fast loading with Redis - your visitors won't wait               |
+| **🎮 Visual Interface**  | No code needed - configure everything with our web UI            |
+| **🌟 Quality Focus**     | Filter by stars to highlight your high-impact contributions      |
+| **📱 Works Everywhere**  | SVG output works in GitHub, websites, presentations, anywhere    |
+| **🔒 Privacy First**     | Your tokens stay secure on the server                            |
 
 ## 🏆 Perfect For
 

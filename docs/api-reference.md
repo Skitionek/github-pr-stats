@@ -4,19 +4,19 @@
 
 ### Basic Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `username` | string | **Required** | GitHub username |
-| `mode` | string | `pr-list` | Display mode:<br>• `pr-list`: Detailed PR list<br>• `repo-aggregate`: Repository aggregate statistics |
-| `theme` | string | `dark` | Theme style: `dark` (dark), `light` (light) |
-| `limit` | number | `10` | Display limit (selects top limit records after filtering and sorting) |
+| Parameter  | Type   | Default      | Description                                                                                           |
+|------------|--------|--------------|-------------------------------------------------------------------------------------------------------|
+| `username` | string | **Required** | GitHub username                                                                                       |
+| `mode`     | string | `pr-list`    | Display mode:<br>• `pr-list`: Detailed PR list<br>• `repo-aggregate`: Repository aggregate statistics |
+| `theme`    | string | `dark`       | Theme style: `dark` (dark), `light` (light)                                                           |
+| `limit`    | number | `10`         | Display limit (selects top limit records after filtering and sorting)                                 |
 
 ### Filtering Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `status` | string | `all` | PR status filter (PR List mode only):<br>• Single value: `all`, `merged`, `open`, `closed`, `draft`<br>• Multiple values: `merged,open` (comma-separated)<br>• Ignored in Repository Aggregate mode |
-| `min_stars` | number | `0` | Minimum star count filter |
+| Parameter   | Type   | Default | Description                                                                                                                                                                                         |
+|-------------|--------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `status`    | string | `all`   | PR status filter (PR List mode only):<br>• Single value: `all`, `merged`, `open`, `closed`, `draft`<br>• Multiple values: `merged,open` (comma-separated)<br>• Ignored in Repository Aggregate mode |
+| `min_stars` | number | `0`     | Minimum star count filter                                                                                                                                                                           |
 
 ### Sorting Parameters
 

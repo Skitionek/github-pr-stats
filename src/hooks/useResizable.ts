@@ -26,7 +26,7 @@ export const useResizable = () => {
     const newLeftWidth = (e.clientX / containerWidth) * 100
 
     const clampedWidth = Math.max(MIN_LEFT_WIDTH, Math.min(MAX_LEFT_WIDTH, newLeftWidth))
-    
+
     setResizeState(prev => ({ ...prev, leftWidth: clampedWidth }))
   }, [resizeState.isResizing])
 

@@ -7,39 +7,39 @@ import type { APIParams } from './types.js'
 
 const CACHE_TTL_SECONDS = 3600
 
-function setSVGSecurityHeaders(res: VercelResponse, filename: string, content?: string) {
+function setSVGSecurityHeaders (res: VercelResponse, filename: string, content?: string) {
   // 设置内容类型和编码
   res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8')
-  
+
   // 缓存控制（仅对成功响应设置）
   if (content) {
     res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300')
     res.setHeader('ETag', `"${Buffer.from(content).toString('base64').slice(0, 8)}"`)
   }
-  
+
   // CORS设置
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
-  
+
   // 安全头
   res.setHeader('X-Content-Type-Options', 'nosniff')
   res.setHeader('X-Frame-Options', 'SAMEORIGIN')
   res.setHeader('Content-Security-Policy', "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline';")
   res.setHeader('Referrer-Policy', 'no-referrer-when-downgrade')
-  
+
   // 内容处置
   res.setHeader('Content-Disposition', `inline; filename="${filename}"`)
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler (req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
   try {
     const params = parseQueryParams(req.query)
-    
+
     if (!params.username) {
       return res.status(400).json({ error: 'Username parameter is required' })
     }
@@ -52,10 +52,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const githubClient = new GitHubAPIClient(process.env.GITHUB_TOKEN)
 
     let rawPRs = await cache.get(params.username)
-    
-    if (!rawPRs) {
+
+    if (rawPRs == null) {
       console.log(`Fetching PR data for user: ${params.username}`)
-      
+
       try {
         rawPRs = await githubClient.getAllUserPRs(params.username)
         await cache.set(params.username, rawPRs, CACHE_TTL_SECONDS)
@@ -71,34 +71,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const { prs, stats, repos } = DataProcessor.processData(rawPRs, params)
-    
-    const svg = SVGGenerator.generate(params.username, prs, stats, params, repos)
-    
-    setSVGSecurityHeaders(res, 'github-pr-stats.svg', svg)
-    
-    return res.status(200).send(svg)
 
+    const svg = SVGGenerator.generate(params.username, prs, stats, params, repos)
+
+    setSVGSecurityHeaders(res, 'github-pr-stats.svg', svg)
+
+    return res.status(200).send(svg)
   } catch (error) {
     console.error('API Error:', error)
-    
+
     let errorMessage = 'Internal server error'
     if (error instanceof Error) {
       errorMessage = error.message
     }
-    
+
     if (req.query.format === 'json') {
       return res.status(500).json({ error: errorMessage })
     }
-    
+
     const errorSvg = generateErrorSvg(errorMessage)
-    
+
     setSVGSecurityHeaders(res, 'github-pr-stats-error.svg')
-    
+
     return res.status(500).send(errorSvg)
   }
 }
 
-export function parseQueryParams(query: VercelRequest['query']): APIParams {
+export function parseQueryParams (query: VercelRequest['query']): APIParams {
   const getString = (key: string): string | undefined => {
     const value = query[key]
     return Array.isArray(value) ? value[0] : value
@@ -112,10 +111,10 @@ export function parseQueryParams(query: VercelRequest['query']): APIParams {
   }
 
   const mode = (getString('mode') as 'pr-list' | 'repo-aggregate') || 'pr-list'
-  
+
   // Set defaults based on mode
   const defaultSort = mode === 'repo-aggregate' ? 'merged_desc,stars_desc' : 'status,stars_desc'
-  const defaultFields = mode === 'repo-aggregate' 
+  const defaultFields = mode === 'repo-aggregate'
     ? 'repo,stars,pr_numbers,total,merged,merged_rate'
     : 'repo,stars,pr_title,pr_number,status,created_date,merged_date'
 
@@ -132,10 +131,10 @@ export function parseQueryParams(query: VercelRequest['query']): APIParams {
   }
 }
 
-function generateErrorSvg(message: string): string {
+function generateErrorSvg (message: string): string {
   const width = 600
   const height = 120
-  
+
   return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" 
     xmlns="http://www.w3.org/2000/svg" style="background-color: #0d1117;">
     <defs>
