@@ -84,7 +84,7 @@ export class MarkdownGenerator {
 
     let markdownTable = ''
     if (params.mode === 'repo-aggregate') {
-      const repoRows = (repos != null) || []
+      const repoRows = repos ?? []
       const fields = params.fields || 'repo,stars,pr_numbers,total,merged,open,draft,closed,merged_rate'
       markdownTable = this.generateRepoTable(repoRows, fields)
     } else {
