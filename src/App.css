@@ -205,6 +205,9 @@ body {
   padding: 1rem 1.5rem 1rem 0.75rem; /* 减少上下 padding */
   border-top: 1px solid var(--color-border-default);
   background: var(--color-bg-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem; /* 减小标题和文本框之间的间距 */
 }
 
 .right-panel-content {
@@ -348,15 +351,6 @@ body {
   gap: 0.5rem;
 }
 
-.checkbox-group.single .checkbox-item {
-  margin-left: 0;
-}
-
-.checkbox-item.primary {
-  font-weight: 500;
-  margin-bottom: 0.25rem;
-}
-
 .checkbox-subgroup {
   margin-left: 1.5rem;
   display: flex;
@@ -366,6 +360,15 @@ body {
 
 .checkbox-subgroup .checkbox-item {
   margin-left: 0;
+}
+
+.checkbox-group.single .checkbox-item {
+  margin-left: 0;
+}
+
+.checkbox-item.primary {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
 }
 
 .checkbox-item input[type="checkbox"] {
@@ -611,12 +614,6 @@ body {
   padding: 2rem;
   border: 2px dashed var(--color-border-default);
   border-radius: var(--border-radius-large);
-}
-
-.url-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem; /* 减小标题和文本框之间的间距 */
 }
 
 .url-header {

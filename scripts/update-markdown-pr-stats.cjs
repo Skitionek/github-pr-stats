@@ -66435,9 +66435,13 @@ var MarkdownGenerator = class _MarkdownGenerator {
   };
   static REPOFIELD_CONFIGS = {
     ..._MarkdownGenerator.FIELD_CONFIGS,
-    pr_numbers: { label: "PR Numbers", align: "left", format: (repo) => _MarkdownGenerator.escapeMarkdownCell(repo.pr_numbers.map(
-      (num) => `[#${num}](https://github.com/${repo.repo}/pull/${num})`
-    ).join(", ")) },
+    pr_numbers: {
+      label: "PR Numbers",
+      align: "left",
+      format: (repo) => _MarkdownGenerator.escapeMarkdownCell(repo.pr_numbers.map(
+        (num) => `[#${num}](https://github.com/${repo.repo}/pull/${num})`
+      ).join(", "))
+    },
     total: { label: "Total", align: "right", format: (repo) => repo.total.toString() },
     merged: { label: "Merged", align: "right", format: (repo) => repo.merged.toString() },
     open: { label: "Open", align: "right", format: (repo) => repo.open.toString() },
@@ -66470,7 +66474,7 @@ var MarkdownGenerator = class _MarkdownGenerator {
     }).filter((segment) => segment !== null).join(" | ");
     let markdownTable = "";
     if (params.mode === "repo-aggregate") {
-      const repoRows = repos || [];
+      const repoRows = repos ?? [];
       const fields = params.fields || "repo,stars,pr_numbers,total,merged,open,draft,closed,merged_rate";
       markdownTable = this.generateRepoTable(repoRows, fields);
     } else {
