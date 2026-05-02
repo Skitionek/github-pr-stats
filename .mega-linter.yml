@@ -3,10 +3,10 @@
 
 # Keep local runs focused on actionable checks for this repository.
 DISABLE_LINTERS:
-	- REPOSITORY_GIT_DIFF
-	- REPOSITORY_GRYPE
-	- SPELL_LYCHEE
-	- TYPESCRIPT_STANDARD
+  - REPOSITORY_GIT_DIFF
+  - REPOSITORY_GRYPE
+  - SPELL_LYCHEE
+  - TYPESCRIPT_STANDARD
 
 # ── Copy-paste detection ──────────────────────────────────────────────────────
 # Allow up to 5% duplication (pre-existing clones in src/ and api/).
