@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "MegaLinter: Fix",
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-v",
+        "${workspaceFolder}:/tmp/lint",
+        "-w",
+        "/tmp/lint",
+        "-e",
+        "VALIDATE_ALL_CODEBASE=true",
+        "-e",
+        "APPLY_FIXES=all",
+        "-e",
+        "GITHUB_COMMENT_REPORTER=false",
+        "-e",
+        "SARIF_REPORTER=true",
+        "ghcr.io/oxsecurity/megalinter-javascript:v8"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
