@@ -62,10 +62,10 @@ REDIS_URL=redis://default:password@host:6379
 
 ```env
 # GitHub API Token (required)
-GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+GITHUB_TOKEN=your_github_token_here
 
 # Redis cache URL (optional but highly recommended for performance)
-REDIS_URL=redis://default:AbCdEf123456@redis-12345.upstash.io:6379
+REDIS_URL=redis://default:your_redis_password@redis-12345.upstash.io:6379
 ```
 
 ## 🏗️ System Architecture
