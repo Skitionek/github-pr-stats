@@ -66163,7 +66163,8 @@ var GitHubAPIClient = class {
       headers: {
         Authorization: `Bearer ${token}`,
         "User-Agent": "github-pr-stats"
-      }
+      },
+      errorPolicy: "all"
     });
   }
   async requestWithRetry(variables) {
@@ -66197,7 +66198,7 @@ var GitHubAPIClient = class {
           throw new Error(`User "${username}" not found`);
         }
         const { nodes, pageInfo } = response.user.pullRequests;
-        allPRs.push(...nodes);
+        allPRs.push(...nodes.filter((node) => node != null));
         hasNextPage = pageInfo.hasNextPage;
         cursor = pageInfo.endCursor;
       } catch (error2) {

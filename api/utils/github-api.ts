@@ -62,7 +62,8 @@ export class GitHubAPIClient {
       headers: {
         Authorization: `Bearer ${token}`,
         'User-Agent': 'github-pr-stats'
-      }
+      },
+      errorPolicy: 'all'
     })
   }
 
@@ -101,7 +102,7 @@ export class GitHubAPIClient {
         }
 
         const { nodes, pageInfo } = response.user.pullRequests
-        allPRs.push(...nodes)
+        allPRs.push(...nodes.filter((node: unknown): node is NonNullable<typeof node> => node != null))
 
         hasNextPage = pageInfo.hasNextPage
         cursor = pageInfo.endCursor
