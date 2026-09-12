@@ -39,6 +39,21 @@ const GET_USER_PRS_QUERY = `
   }
 `
 
+const MAX_RETRIES = 4
+const RETRY_BASE_DELAY_MS = 1000
+
+function sleep (ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+function isTransientError (error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error)
+  return /something went wrong while executing your query/i.test(message) ||
+    /timeout/i.test(message) ||
+    /ECONNRESET|ETIMEDOUT|EAI_AGAIN/i.test(message) ||
+    /5\d\d/.test(message)
+}
+
 export class GitHubAPIClient {
   private readonly client: GraphQLClient
 
@@ -51,6 +66,22 @@ export class GitHubAPIClient {
     })
   }
 
+  private async requestWithRetry (variables: { username: string, first: number, after: string | null }): Promise<GraphQLResponse> {
+    let lastError: unknown
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        return await this.client.request(GET_USER_PRS_QUERY, variables)
+      } catch (error) {
+        lastError = error
+        if (attempt === MAX_RETRIES || !isTransientError(error)) {
+          throw error
+        }
+        await sleep(RETRY_BASE_DELAY_MS * 2 ** attempt)
+      }
+    }
+    throw lastError
+  }
+
   async getAllUserPRs (username: string): Promise<GitHubPR[]> {
     const allPRs: GitHubPR[] = []
     let hasNextPage = true
@@ -59,14 +90,11 @@ export class GitHubAPIClient {
 
     while (hasNextPage) {
       try {
-        const response: GraphQLResponse = await this.client.request(
-          GET_USER_PRS_QUERY,
-          {
-            username,
-            first: pageSize,
-            after: cursor
-          }
-        )
+        const response: GraphQLResponse = await this.requestWithRetry({
+          username,
+          first: pageSize,
+          after: cursor
+        })
 
         if (!response.user) {
           throw new Error(`User "${username}" not found`)
@@ -90,14 +118,11 @@ export class GitHubAPIClient {
 
   async getUserPRsCount (username: string): Promise<number> {
     try {
-      const response: GraphQLResponse = await this.client.request(
-        GET_USER_PRS_QUERY,
-        {
-          username,
-          first: 1,
-          after: null
-        }
-      )
+      const response: GraphQLResponse = await this.requestWithRetry({
+        username,
+        first: 1,
+        after: null
+      })
 
       if (!response.user) {
         throw new Error(`User "${username}" not found`)

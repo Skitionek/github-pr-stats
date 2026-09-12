@@ -66147,6 +66147,15 @@ var GET_USER_PRS_QUERY = `
     }
   }
 `;
+var MAX_RETRIES = 4;
+var RETRY_BASE_DELAY_MS = 1e3;
+function sleep(ms) {
+  return new Promise((resolve2) => setTimeout(resolve2, ms));
+}
+function isTransientError(error2) {
+  const message = error2 instanceof Error ? error2.message : String(error2);
+  return /something went wrong while executing your query/i.test(message) || /timeout/i.test(message) || /ECONNRESET|ETIMEDOUT|EAI_AGAIN/i.test(message) || /5\d\d/.test(message);
+}
 var GitHubAPIClient = class {
   client;
   constructor(token) {
@@ -66157,6 +66166,21 @@ var GitHubAPIClient = class {
       }
     });
   }
+  async requestWithRetry(variables) {
+    let lastError;
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        return await this.client.request(GET_USER_PRS_QUERY, variables);
+      } catch (error2) {
+        lastError = error2;
+        if (attempt === MAX_RETRIES || !isTransientError(error2)) {
+          throw error2;
+        }
+        await sleep(RETRY_BASE_DELAY_MS * 2 ** attempt);
+      }
+    }
+    throw lastError;
+  }
   async getAllUserPRs(username) {
     const allPRs = [];
     let hasNextPage = true;
@@ -66164,14 +66188,11 @@ var GitHubAPIClient = class {
     const pageSize = 100;
     while (hasNextPage) {
       try {
-        const response = await this.client.request(
-          GET_USER_PRS_QUERY,
-          {
-            username,
-            first: pageSize,
-            after: cursor
-          }
-        );
+        const response = await this.requestWithRetry({
+          username,
+          first: pageSize,
+          after: cursor
+        });
         if (!response.user) {
           throw new Error(`User "${username}" not found`);
         }
@@ -66190,14 +66211,11 @@ var GitHubAPIClient = class {
   }
   async getUserPRsCount(username) {
     try {
-      const response = await this.client.request(
-        GET_USER_PRS_QUERY,
-        {
-          username,
-          first: 1,
-          after: null
-        }
-      );
+      const response = await this.requestWithRetry({
+        username,
+        first: 1,
+        after: null
+      });
       if (!response.user) {
         throw new Error(`User "${username}" not found`);
       }
